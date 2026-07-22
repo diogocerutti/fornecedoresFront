@@ -1,142 +1,193 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.92fr) minmax(480px, 1.08fr);
+  background: #f6f8f7;
 }
 
-.main {
+.brandPanel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
+  padding: clamp(32px, 4vw, 64px);
+  color: #f8fffd;
+  background:
+    radial-gradient(circle at 15% 82%, rgb(40 198 158 / 24%), transparent 29%),
+    linear-gradient(145deg, #0b3d3b 0%, #082c32 58%, #071f29 100%);
 }
 
-.intro {
+.brandPanel::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  width: clamp(280px, 34vw, 520px);
+  aspect-ratio: 1;
+  right: -24%;
+  top: 8%;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 70px rgb(255 255 255 / 3%),
+    0 0 0 140px rgb(255 255 255 / 2%);
+}
+
+.brand,
+.mobileBrand {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+  gap: 12px;
+  font-size: 17px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
-  gap: 8px;
+.brandMark {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  color: #062d2d;
+  background: #73e1bd;
+  font-size: 17px;
+  font-weight: 750;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.introduction {
+  max-width: 560px;
+  margin: clamp(80px, 16vh, 180px) 0;
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
-  }
-
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
+.eyebrow {
+  display: block;
+  margin-bottom: 15px;
+  color: #3c8e79;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
-  }
+.brandPanel .eyebrow {
+  color: #73e1bd;
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+.introduction h1 {
+  max-width: 520px;
+  font-size: clamp(42px, 4.3vw, 70px);
+  font-weight: 580;
+  line-height: 1.04;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
 
+.introduction p {
+  max-width: 500px;
+  margin-top: 26px;
+  color: rgb(232 248 244 / 72%);
+  font-size: clamp(16px, 1.2vw, 18px);
+  line-height: 1.7;
+}
+
+.supportText {
+  color: rgb(232 248 244 / 62%);
+  font-size: 13px;
+}
+
+.supportText a {
+  color: #dffbf2;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: rgb(115 225 189 / 45%);
+  text-underline-offset: 4px;
+}
+
+.formPanel {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(32px, 6vw, 88px);
+  color: #142e30;
+}
+
+.mobileBrand {
+  display: none;
+  align-self: flex-start;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 450px;
+  margin: auto 0;
+}
+
+.formHeading {
+  margin-bottom: 36px;
+}
+
+.formHeading h2 {
+  font-size: clamp(32px, 3.2vw, 43px);
+  font-weight: 620;
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+}
+
+.formHeading p {
+  margin-top: 12px;
+  color: #687b7c;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.footer {
+  width: 100%;
+  color: #8a9998;
+  font-size: 12px;
+  text-align: center;
+}
+
+@media (max-width: 860px) {
   .page {
-    --background: #000;
-    --foreground: #000;
+    grid-template-columns: 1fr;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+  .brandPanel {
+    display: none;
+  }
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .formPanel {
+    min-height: 100svh;
+    justify-content: flex-start;
+    padding: 28px clamp(22px, 7vw, 64px);
+  }
+
+  .mobileBrand {
+    display: flex;
+  }
+
+  .formWrapper {
+    margin: auto 0;
+    padding: 48px 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .formPanel {
+    padding-inline: 20px;
+  }
+
+  .formHeading {
+    margin-bottom: 28px;
+  }
+
+  .formWrapper {
+    padding: 40px 0;
   }
 }
