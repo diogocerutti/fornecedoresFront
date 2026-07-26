@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
@@ -16,6 +17,7 @@ type LoginResponse = {
 };
 
 export function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{
@@ -53,12 +55,7 @@ export function LoginForm() {
         );
       }
 
-      const login = data as LoginResponse;
-      setMessage({
-        type: "success",
-        text: `Login realizado com sucesso. Bem-vindo, ${login.user.name}!`,
-      });
-      form.reset();
+      router.replace("/home");
     } catch (error) {
       setMessage({
         type: "error",
