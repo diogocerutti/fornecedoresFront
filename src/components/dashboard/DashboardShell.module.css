@@ -1,5 +1,5 @@
 .shell {
-  min-height: 100vh;
+  min-height: 100dvh;
   background: #f5f8f7;
 }
 
@@ -92,26 +92,41 @@
   top: 72px;
   bottom: 0;
   left: 0;
-  width: 92px;
+  width: 244px;
   border-right: 1px solid #e1e8e5;
   background: #ffffff;
-  padding: 18px 12px;
+  padding: 18px 14px;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .navItem {
   display: flex;
-  min-height: 68px;
-  flex-direction: column;
+  width: 100%;
+  min-height: 48px;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border-radius: 13px;
-  color: #6d807e;
-  font-size: 11px;
+  gap: 13px;
+  border: 0;
+  border-radius: 11px;
+  color: #667b79;
+  background: transparent;
+  padding: 0 13px;
+  cursor: pointer;
+  font-size: 13px;
   font-weight: 700;
+  text-align: left;
   transition:
     color 160ms ease,
     background-color 160ms ease;
+}
+
+.navItem:hover {
+  color: #195e54;
+  background: #f1f7f5;
 }
 
 .navItemActive {
@@ -122,16 +137,17 @@
 .homeIcon {
   position: relative;
   display: block;
-  width: 24px;
-  height: 23px;
+  width: 22px;
+  height: 21px;
+  flex: 0 0 22px;
 }
 
 .homeIcon::before {
   position: absolute;
   top: 2px;
   left: 5px;
-  width: 13px;
-  height: 13px;
+  width: 11px;
+  height: 11px;
   border-top: 2px solid currentColor;
   border-left: 2px solid currentColor;
   content: "";
@@ -143,28 +159,92 @@
   right: 4px;
   bottom: 1px;
   left: 4px;
-  height: 13px;
+  height: 12px;
   border: 2px solid currentColor;
   border-top: 0;
   border-radius: 2px 2px 4px 4px;
 }
 
-.homeIcon span::after {
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  width: 5px;
-  height: 8px;
+.productIcon {
+  position: relative;
+  width: 21px;
+  height: 18px;
+  flex: 0 0 21px;
   border: 2px solid currentColor;
-  border-bottom: 0;
+  border-radius: 4px;
+}
+
+.productIcon::before {
+  position: absolute;
+  top: 4px;
+  right: -2px;
+  left: -2px;
+  border-top: 2px solid currentColor;
   content: "";
-  transform: translateX(-50%);
+}
+
+.productIcon::after {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  height: 6px;
+  border-left: 2px solid currentColor;
+  content: "";
+}
+
+.dropdownButton {
+  position: relative;
+}
+
+.chevron {
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform 160ms ease;
+}
+
+.chevronOpen {
+  transform: rotate(225deg) translate(-2px, -2px);
+}
+
+.submenu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 4px 0 6px 46px;
+  border-left: 1px solid #dce7e3;
+  padding-left: 12px;
+}
+
+.submenuItem {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  border-radius: 8px;
+  color: #758684;
+  padding: 7px 10px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+a.submenuItem:hover,
+.submenuItemActive {
+  color: #0d5c51;
+  background: #edf7f3;
+}
+
+.submenuItem[aria-disabled="true"] {
+  cursor: default;
+  opacity: 0.62;
 }
 
 .content {
   min-height: 100vh;
-  margin-left: 92px;
-  padding-top: 72px;
+  margin-left: 244px;
+  padding: 104px 34px 34px;
 }
 
 .loadingPage {
@@ -190,7 +270,8 @@
 
 .logoutButton:focus-visible,
 .brand:focus-visible,
-.navItem:focus-visible {
+.navItem:focus-visible,
+.submenuItem:focus-visible {
   outline: 3px solid rgb(59 157 131 / 32%);
   outline-offset: 3px;
 }
@@ -207,24 +288,55 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .header {
     padding: 0 16px;
   }
 
   .brandName,
-  .userName {
+  .userName,
+  .navItem > span:not(.homeIcon):not(.productIcon):not(.chevron) {
     display: none;
   }
 
   .sidebar {
-    width: 76px;
-    padding-right: 9px;
-    padding-left: 9px;
+    width: 78px;
+    padding: 18px 10px;
+  }
+
+  .navItem {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .chevron {
+    display: none;
+  }
+
+  .dropdown {
+    position: relative;
+  }
+
+  .submenu {
+    position: absolute;
+    top: 0;
+    left: 62px;
+    width: 190px;
+    border: 1px solid #dce7e3;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgb(22 62 57 / 14%);
+    margin: 0;
+    padding: 8px;
+  }
+
+  .submenuItem {
+    display: flex;
   }
 
   .content {
-    margin-left: 76px;
+    margin-left: 78px;
+    padding: 96px 18px 24px;
   }
 }
 

@@ -55,7 +55,7 @@ export function LoginForm() {
         );
       }
 
-      router.replace("/home");
+      router.replace("/dashboard");
     } catch (error) {
       setMessage({
         type: "error",

@@ -1,0 +1,256 @@
+.page {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+}
+
+.heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #2c806b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.heading h1 {
+  color: #173536;
+  font-size: clamp(25px, 3vw, 32px);
+  font-weight: 760;
+  letter-spacing: -0.035em;
+}
+
+.heading p {
+  margin-top: 8px;
+  color: #718381;
+  font-size: 14px;
+}
+
+.tableCard {
+  overflow: hidden;
+  border: 1px solid #e0e8e5;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 12px 36px rgb(24 62 57 / 7%);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #e7edeb;
+  padding: 18px;
+}
+
+.search {
+  position: relative;
+  flex: 1;
+}
+
+.search input {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #d6e1de;
+  border-radius: 10px;
+  outline: 0;
+  color: #183738;
+  background: #fbfcfc;
+  padding: 0 14px 0 42px;
+  font-size: 13px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.search input:focus {
+  border-color: #3b9d83;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgb(59 157 131 / 12%);
+}
+
+.search input::placeholder {
+  color: #96a6a3;
+}
+
+.searchIcon {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 16px;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #78908c;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translateY(-58%);
+}
+
+.searchIcon::after {
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  width: 6px;
+  border-top: 2px solid #78908c;
+  content: "";
+  transform: rotate(45deg);
+}
+
+.createButton {
+  display: inline-flex;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 10px;
+  color: #f5fffb;
+  background: #14705f;
+  padding: 0 18px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+  box-shadow: 0 7px 17px rgb(20 112 95 / 18%);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.createButton span {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.createButton:hover {
+  background: #0f5e51;
+  box-shadow: 0 9px 20px rgb(20 112 95 / 24%);
+  transform: translateY(-1px);
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #415b59;
+  font-size: 13px;
+}
+
+.table th {
+  height: 46px;
+  border-bottom: 1px solid #e6ecea;
+  color: #71827f;
+  background: #f8faf9;
+  padding: 0 20px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.table td {
+  height: 58px;
+  border-bottom: 1px solid #edf1f0;
+  padding: 0 20px;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.table tbody tr:not(:has(.tableMessage)):hover {
+  background: #fbfdfc;
+}
+
+.idCell {
+  width: 90px;
+  color: #82918f;
+  font-variant-numeric: tabular-nums;
+}
+
+.nameCell {
+  color: #1e4543;
+  font-weight: 680;
+}
+
+.abbreviation {
+  display: inline-flex;
+  min-width: 42px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
+  color: #286c5d;
+  background: #eaf6f2;
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.tableMessage {
+  height: 150px !important;
+  color: #7d8d8a;
+  text-align: center;
+}
+
+.error {
+  color: #9b3c34;
+}
+
+.tableFooter {
+  border-top: 1px solid #e7edeb;
+  color: #82908e;
+  padding: 13px 20px;
+  font-size: 11px;
+  text-align: right;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.createButton:focus-visible {
+  outline: 3px solid rgb(59 157 131 / 32%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .heading p {
+    max-width: 430px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .search input,
+  .createButton {
+    transition: none;
+  }
+}
