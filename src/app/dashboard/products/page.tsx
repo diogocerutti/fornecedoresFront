@@ -37,6 +37,9 @@ export default function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
   const [deletingProductId, setDeletingProductId] = useState<string | null>(
     null,
   );
@@ -116,6 +119,20 @@ export default function ProductsPage() {
     return () => window.clearTimeout(timeout);
   }, [feedback]);
 
+  useEffect(() => {
+    if (!editingProduct) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape" && !isEditing) {
+        setEditingProduct(null);
+        setEditError(null);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [editingProduct, isEditing]);
+
   const filteredProducts = useMemo(() => {
     const normalizedSearch = search.trim().toLocaleLowerCase("pt-BR");
     if (!normalizedSearch) return products;
@@ -129,6 +146,12 @@ export default function ProductsPage() {
     if (isSubmitting) return;
     setIsModalOpen(false);
     setFormError(null);
+  }
+
+  function closeEditModal() {
+    if (isEditing) return;
+    setEditingProduct(null);
+    setEditError(null);
   }
 
   async function handleCreateProduct(event: FormEvent<HTMLFormElement>) {
@@ -222,6 +245,67 @@ export default function ProductsPage() {
       });
     } finally {
       setDeletingProductId(null);
+    }
+  }
+
+  async function handleEditProduct(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (!editingProduct) return;
+
+    setIsEditing(true);
+    setEditError(null);
+    setFeedback(null);
+
+    const formData = new FormData(event.currentTarget);
+
+    try {
+      const response = await fetch(
+        `${API_URL}/api/products/${editingProduct.id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: formData.get("name"),
+            measureId: formData.get("measureId"),
+            description: formData.get("description"),
+          }),
+        },
+      );
+      const data = (await response.json()) as {
+        product?: Product;
+        message?: string;
+      };
+
+      if (!response.ok || !data.product) {
+        throw new Error(data.message ?? "Não foi possível editar o produto.");
+      }
+
+      setProducts((currentProducts) =>
+        currentProducts
+          .map((product) =>
+            product.id === editingProduct.id
+              ? (data.product as Product)
+              : product,
+          )
+          .sort((first, second) =>
+            first.name.localeCompare(second.name, "pt-BR"),
+          ),
+      );
+      setEditingProduct(null);
+      setFeedback({
+        type: "success",
+        message: data.message ?? "Produto atualizado com sucesso.",
+      });
+    } catch (requestError) {
+      setEditError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Não foi possível editar o produto.",
+      );
+    } finally {
+      setIsEditing(false);
     }
   }
 
@@ -338,7 +422,10 @@ export default function ProductsPage() {
                         <button
                           className={`${styles.actionButton} ${styles.editButton}`}
                           type="button"
-                          title="A edição será implementada na próxima etapa"
+                          onClick={() => {
+                            setEditError(null);
+                            setEditingProduct(product);
+                          }}
                         >
                           Editar Produto
                         </button>
@@ -461,6 +548,110 @@ export default function ProductsPage() {
                   disabled={isSubmitting || measures.length === 0}
                 >
                   {isSubmitting ? "Salvando..." : "Cadastrar produto"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
+
+      {editingProduct ? (
+        <div
+          className={styles.modalBackdrop}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) closeEditModal();
+          }}
+        >
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="edit-product-title"
+          >
+            <div className={styles.modalHeader}>
+              <div>
+                <span className={styles.eyebrow}>Editar cadastro</span>
+                <h2 id="edit-product-title">Editar produto</h2>
+              </div>
+              <button
+                className={styles.closeButton}
+                type="button"
+                onClick={closeEditModal}
+                disabled={isEditing}
+                aria-label="Fechar"
+              >
+                ×
+              </button>
+            </div>
+
+            <form className={styles.form} onSubmit={handleEditProduct}>
+              <label className={styles.field}>
+                <span>Nome</span>
+                <input
+                  name="name"
+                  type="text"
+                  maxLength={160}
+                  defaultValue={editingProduct.name}
+                  placeholder="Ex.: Café torrado"
+                  disabled={isEditing}
+                  autoFocus
+                  required
+                />
+              </label>
+
+              <label className={styles.field}>
+                <span>Unidade de medida</span>
+                <select
+                  name="measureId"
+                  defaultValue={editingProduct.measure.id}
+                  disabled={isEditing}
+                  required
+                >
+                  <option value="">Selecione uma unidade</option>
+                  {measures.map((measure) => (
+                    <option key={measure.id} value={measure.id}>
+                      {measure.name} ({measure.abbreviation})
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className={styles.field}>
+                <span>
+                  Descrição <small>Opcional</small>
+                </span>
+                <textarea
+                  name="description"
+                  maxLength={5_000}
+                  rows={4}
+                  defaultValue={editingProduct.description ?? ""}
+                  placeholder="Inclua informações complementares sobre o produto."
+                  disabled={isEditing}
+                />
+              </label>
+
+              {editError ? (
+                <p className={styles.formError} role="alert">
+                  {editError}
+                </p>
+              ) : null}
+
+              <div className={styles.formActions}>
+                <button
+                  className={styles.cancelButton}
+                  type="button"
+                  onClick={closeEditModal}
+                  disabled={isEditing}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className={styles.saveButton}
+                  type="submit"
+                  disabled={isEditing || measures.length === 0}
+                >
+                  {isEditing ? "Salvando..." : "Salvar alterações"}
                 </button>
               </div>
             </form>
