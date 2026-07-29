@@ -138,9 +138,19 @@ export function DashboardShell({ children }: { children: ReactNode }) {
 
             {isProductsOpen ? (
               <div className={styles.submenu} id="products-menu">
-                <span className={styles.submenuItem} aria-disabled="true">
+                <Link
+                  className={`${styles.submenuItem} ${
+                    pathname === "/dashboard/products"
+                      ? styles.submenuItemActive
+                      : ""
+                  }`}
+                  href="/dashboard/products"
+                  aria-current={
+                    pathname === "/dashboard/products" ? "page" : undefined
+                  }
+                >
                   Lista
-                </span>
+                </Link>
                 <Link
                   className={`${styles.submenuItem} ${
                     pathname === "/dashboard/products/measure"
