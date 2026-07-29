@@ -3,6 +3,90 @@
   margin: 0 auto;
 }
 
+.toast {
+  position: fixed;
+  z-index: 60;
+  top: 84px;
+  right: 24px;
+  display: grid;
+  min-width: min(360px, calc(100vw - 32px));
+  max-width: min(440px, calc(100vw - 32px));
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 12px 12px 12px 14px;
+  font-size: 13px;
+  font-weight: 650;
+  box-shadow: 0 16px 42px rgb(17 54 50 / 18%);
+  animation: toastIn 180ms ease-out;
+}
+
+.toastSuccess {
+  border-color: #a9d5c8;
+  color: #185b4e;
+  background: #eef9f5;
+}
+
+.toastError {
+  border-color: #e9bab5;
+  color: #8e332b;
+  background: #fff3f1;
+}
+
+.toastIcon {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: currentColor;
+  font-size: 0;
+}
+
+.toastIcon::after {
+  color: #ffffff;
+  content: "✓";
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.toastError .toastIcon::after {
+  content: "!";
+}
+
+.toast button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  color: currentColor;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.toast button:hover {
+  background: rgb(23 53 54 / 7%);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .heading {
   margin-bottom: 24px;
 }
@@ -242,6 +326,11 @@
     border-color 160ms ease;
 }
 
+.actionButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .editButton {
   border-color: #b9d1ee;
   color: #2766a5;
@@ -455,6 +544,7 @@
 
 .createButton:focus-visible,
 .actionButton:focus-visible,
+.toast button:focus-visible,
 .closeButton:focus-visible,
 .cancelButton:focus-visible,
 .saveButton:focus-visible {
@@ -463,6 +553,11 @@
 }
 
 @media (max-width: 780px) {
+  .toast {
+    top: 76px;
+    right: 16px;
+  }
+
   .toolbar {
     align-items: stretch;
     flex-direction: column;
@@ -484,6 +579,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+
   .search input,
   .createButton,
   .saveButton,

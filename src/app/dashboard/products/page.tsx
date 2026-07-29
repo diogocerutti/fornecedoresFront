@@ -23,6 +23,11 @@ type Product = {
   measure: Measure;
 };
 
+type Feedback = {
+  type: "success" | "error";
+  message: string;
+};
+
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [measures, setMeasures] = useState<Measure[]>([]);
@@ -32,6 +37,10 @@ export default function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [deletingProductId, setDeletingProductId] = useState<string | null>(
+    null,
+  );
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -100,6 +109,13 @@ export default function ProductsPage() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isModalOpen, isSubmitting]);
 
+  useEffect(() => {
+    if (!feedback) return;
+
+    const timeout = window.setTimeout(() => setFeedback(null), 3_500);
+    return () => window.clearTimeout(timeout);
+  }, [feedback]);
+
   const filteredProducts = useMemo(() => {
     const normalizedSearch = search.trim().toLocaleLowerCase("pt-BR");
     if (!normalizedSearch) return products;
@@ -151,6 +167,10 @@ export default function ProductsPage() {
       );
       form.reset();
       setIsModalOpen(false);
+      setFeedback({
+        type: "success",
+        message: "Produto cadastrado com sucesso.",
+      });
     } catch (requestError) {
       setFormError(
         requestError instanceof Error
@@ -162,8 +182,75 @@ export default function ProductsPage() {
     }
   }
 
+  async function handleDeleteProduct(product: Product) {
+    const confirmed = window.confirm(
+      `Deseja realmente excluir o produto "${product.name}"?`,
+    );
+
+    if (!confirmed) return;
+
+    setDeletingProductId(product.id);
+    setFeedback(null);
+
+    try {
+      const response = await fetch(`${API_URL}/api/products/${product.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(data.message ?? "Não foi possível excluir o produto.");
+      }
+
+      setProducts((currentProducts) =>
+        currentProducts.filter(
+          (currentProduct) => currentProduct.id !== product.id,
+        ),
+      );
+      setFeedback({
+        type: "success",
+        message: data.message ?? "Produto excluído com sucesso.",
+      });
+    } catch (requestError) {
+      setFeedback({
+        type: "error",
+        message:
+          requestError instanceof Error
+            ? requestError.message
+            : "Não foi possível excluir o produto.",
+      });
+    } finally {
+      setDeletingProductId(null);
+    }
+  }
+
   return (
     <section className={styles.page}>
+      {feedback ? (
+        <div
+          className={`${styles.toast} ${
+            feedback.type === "success"
+              ? styles.toastSuccess
+              : styles.toastError
+          }`}
+          role={feedback.type === "error" ? "alert" : "status"}
+          aria-live={feedback.type === "error" ? "assertive" : "polite"}
+        >
+          <span className={styles.toastIcon} aria-hidden="true">
+            {feedback.type === "success" ? "✓" : "!"}
+          </span>
+          <span>{feedback.message}</span>
+          <button
+            type="button"
+            onClick={() => setFeedback(null)}
+            aria-label="Fechar mensagem"
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
+
       <div className={styles.heading}>
         <div>
           <span className={styles.eyebrow}>Produtos</span>
@@ -258,9 +345,12 @@ export default function ProductsPage() {
                         <button
                           className={`${styles.actionButton} ${styles.deleteButton}`}
                           type="button"
-                          title="A exclusão será implementada na próxima etapa"
+                          onClick={() => void handleDeleteProduct(product)}
+                          disabled={deletingProductId === product.id}
                         >
-                          Deletar Produto
+                          {deletingProductId === product.id
+                            ? "Excluindo..."
+                            : "Deletar Produto"}
                         </button>
                       </div>
                     </td>
