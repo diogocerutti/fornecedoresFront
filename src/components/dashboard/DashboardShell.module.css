@@ -241,6 +241,47 @@ a.submenuItem:hover,
   opacity: 0.62;
 }
 
+.whatsappTestArea {
+  margin-top: 6px;
+}
+
+.whatsappTestButton {
+  color: #25745f;
+}
+
+.whatsappTestButton:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.whatsappIcon {
+  display: inline-grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.whatsappStatus {
+  margin: 7px 10px 0 13px;
+  color: #6b7d7a;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.whatsappStatusSuccess {
+  color: #147253;
+}
+
+.whatsappStatusError {
+  color: #a33d36;
+}
+
 .content {
   min-height: 100vh;
   margin-left: 244px;
@@ -295,7 +336,8 @@ a.submenuItem:hover,
 
   .brandName,
   .userName,
-  .navItem > span:not(.homeIcon):not(.productIcon):not(.chevron) {
+  .navItem
+    > span:not(.homeIcon):not(.productIcon):not(.whatsappIcon):not(.chevron) {
     display: none;
   }
 
@@ -332,6 +374,10 @@ a.submenuItem:hover,
 
   .submenuItem {
     display: flex;
+  }
+
+  .whatsappStatus {
+    display: none;
   }
 
   .content {

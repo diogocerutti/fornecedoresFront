@@ -14,6 +14,8 @@ type SessionUser = {
   roles: string[];
 };
 
+type WhatsAppTestStatus = "idle" | "sending" | "success" | "error";
+
 export function DashboardShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -21,6 +23,9 @@ export function DashboardShell({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(isProductsSection);
+  const [whatsAppTestStatus, setWhatsAppTestStatus] =
+    useState<WhatsAppTestStatus>("idle");
+  const [whatsAppTestMessage, setWhatsAppTestMessage] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -60,6 +65,35 @@ export function DashboardShell({ children }: { children: ReactNode }) {
       });
     } finally {
       router.replace("/");
+    }
+  }
+
+  async function handleWhatsAppTest() {
+    setWhatsAppTestStatus("sending");
+    setWhatsAppTestMessage("Enviando mensagem TESTE...");
+
+    try {
+      const response = await fetch(`${API_URL}/api/whatsapp/test`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = (await response.json().catch(() => ({}))) as {
+        message?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(data.message ?? "Não foi possível enviar a mensagem.");
+      }
+
+      setWhatsAppTestStatus("success");
+      setWhatsAppTestMessage(data.message ?? "Mensagem enviada com sucesso.");
+    } catch (error) {
+      setWhatsAppTestStatus("error");
+      setWhatsAppTestMessage(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível enviar a mensagem.",
+      );
     }
   }
 
@@ -167,6 +201,40 @@ export function DashboardShell({ children }: { children: ReactNode }) {
                   Unidade de Medida
                 </Link>
               </div>
+            ) : null}
+          </div>
+
+          <div className={styles.whatsappTestArea}>
+            <button
+              className={`${styles.navItem} ${styles.whatsappTestButton}`}
+              type="button"
+              onClick={handleWhatsAppTest}
+              disabled={whatsAppTestStatus === "sending"}
+              aria-describedby={
+                whatsAppTestStatus === "idle" ? undefined : "whatsapp-status"
+              }
+            >
+              <span className={styles.whatsappIcon} aria-hidden="true">
+                W
+              </span>
+              <span>testar whatsapp</span>
+            </button>
+
+            {whatsAppTestStatus !== "idle" ? (
+              <p
+                className={`${styles.whatsappStatus} ${
+                  whatsAppTestStatus === "success"
+                    ? styles.whatsappStatusSuccess
+                    : whatsAppTestStatus === "error"
+                      ? styles.whatsappStatusError
+                      : ""
+                }`}
+                id="whatsapp-status"
+                role="status"
+                aria-live="polite"
+              >
+                {whatsAppTestMessage}
+              </p>
             ) : null}
           </div>
         </nav>
