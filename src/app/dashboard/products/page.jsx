@@ -1,49 +1,24 @@
 "use client";
 
-import {
-  type FormEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "./page.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 
-type Measure = {
-  id: string;
-  name: string;
-  abbreviation: string;
-};
-
-type Product = {
-  id: string;
-  name: string;
-  description: string | null;
-  measure: Measure;
-};
-
-type Feedback = {
-  type: "success" | "error";
-  message: string;
-};
-
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [measures, setMeasures] = useState<Measure[]>([]);
+  const [products, setProducts] = useState([]);
+  const [measures, setMeasures] = useState([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [formError, setFormError] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editError, setEditError] = useState<string | null>(null);
-  const [deletingProductId, setDeletingProductId] = useState<string | null>(
-    null,
-  );
-  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [editError, setEditError] = useState(null);
+  const [deletingProductId, setDeletingProductId] = useState(null);
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,12 +42,8 @@ export default function ProductsPage() {
           throw new Error("Não foi possível carregar os produtos.");
         }
 
-        const productsData = (await productsResponse.json()) as {
-          products: Product[];
-        };
-        const measuresData = (await measuresResponse.json()) as {
-          measures: Measure[];
-        };
+        const productsData = await productsResponse.json();
+        const measuresData = await measuresResponse.json();
 
         setProducts(productsData.products);
         setMeasures(measuresData.measures);
@@ -101,7 +72,7 @@ export default function ProductsPage() {
   useEffect(() => {
     if (!isModalOpen) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event) {
       if (event.key === "Escape" && !isSubmitting) {
         setIsModalOpen(false);
         setFormError(null);
@@ -122,7 +93,7 @@ export default function ProductsPage() {
   useEffect(() => {
     if (!editingProduct) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event) {
       if (event.key === "Escape" && !isEditing) {
         setEditingProduct(null);
         setEditError(null);
@@ -154,7 +125,7 @@ export default function ProductsPage() {
     setEditError(null);
   }
 
-  async function handleCreateProduct(event: FormEvent<HTMLFormElement>) {
+  async function handleCreateProduct(event) {
     event.preventDefault();
     setIsSubmitting(true);
     setFormError(null);
@@ -174,17 +145,14 @@ export default function ProductsPage() {
         }),
       });
 
-      const data = (await response.json()) as {
-        product?: Product;
-        message?: string;
-      };
+      const data = await response.json();
 
       if (!response.ok || !data.product) {
         throw new Error(data.message ?? "Não foi possível cadastrar o produto.");
       }
 
       setProducts((currentProducts) =>
-        [...currentProducts, data.product as Product].sort((first, second) =>
+        [...currentProducts, data.product].sort((first, second) =>
           first.name.localeCompare(second.name, "pt-BR"),
         ),
       );
@@ -205,7 +173,7 @@ export default function ProductsPage() {
     }
   }
 
-  async function handleDeleteProduct(product: Product) {
+  async function handleDeleteProduct(product) {
     const confirmed = window.confirm(
       `Deseja realmente excluir o produto "${product.name}"?`,
     );
@@ -220,7 +188,7 @@ export default function ProductsPage() {
         method: "DELETE",
         credentials: "include",
       });
-      const data = (await response.json()) as { message?: string };
+      const data = await response.json();
 
       if (!response.ok) {
         throw new Error(data.message ?? "Não foi possível excluir o produto.");
@@ -248,7 +216,7 @@ export default function ProductsPage() {
     }
   }
 
-  async function handleEditProduct(event: FormEvent<HTMLFormElement>) {
+  async function handleEditProduct(event) {
     event.preventDefault();
 
     if (!editingProduct) return;
@@ -273,10 +241,7 @@ export default function ProductsPage() {
           }),
         },
       );
-      const data = (await response.json()) as {
-        product?: Product;
-        message?: string;
-      };
+      const data = await response.json();
 
       if (!response.ok || !data.product) {
         throw new Error(data.message ?? "Não foi possível editar o produto.");
@@ -286,7 +251,7 @@ export default function ProductsPage() {
         currentProducts
           .map((product) =>
             product.id === editingProduct.id
-              ? (data.product as Product)
+              ? data.product
               : product,
           )
           .sort((first, second) =>

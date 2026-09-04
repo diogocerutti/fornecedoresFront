@@ -1,31 +1,18 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./LoginForm.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 
-type LoginResponse = {
-  accessToken: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    roles: string[];
-  };
-};
-
 export function LoginForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{
-    type: "error" | "success";
-    text: string;
-  } | null>(null);
+  const [message, setMessage] = useState(null);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setIsSubmitting(true);
     setMessage(null);
@@ -45,7 +32,7 @@ export function LoginForm() {
         }),
       });
 
-      const data = (await response.json()) as LoginResponse | { message?: string };
+      const data = await response.json();
 
       if (!response.ok) {
         throw new Error(

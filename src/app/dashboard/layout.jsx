@@ -1,14 +1,9 @@
-import type { Metadata } from "next";
 import { DashboardShell } from "@/components/dashboard/DashboardShell";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Dashboard | Portal de Fornecedores",
 };
 
-export default function DashboardLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function DashboardLayout({ children }) {
   return <DashboardShell>{children}</DashboardShell>;
 }

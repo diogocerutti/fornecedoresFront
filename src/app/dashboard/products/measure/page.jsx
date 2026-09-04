@@ -5,17 +5,11 @@ import styles from "./page.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 
-type Measure = {
-  id: string;
-  name: string;
-  abbreviation: string;
-};
-
 export default function MeasurePage() {
-  const [measures, setMeasures] = useState<Measure[]>([]);
+  const [measures, setMeasures] = useState([]);
   const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,7 +26,7 @@ export default function MeasurePage() {
           throw new Error("Não foi possível carregar as unidades de medida.");
         }
 
-        const data = (await response.json()) as { measures: Measure[] };
+        const data = await response.json();
         setMeasures(data.measures);
       } catch (requestError) {
         if (

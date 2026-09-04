@@ -2,29 +2,20 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./DashboardShell.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 
-type SessionUser = {
-  id: string;
-  name: string;
-  email: string;
-  roles: string[];
-};
-
-type WhatsAppTestStatus = "idle" | "sending" | "success" | "error";
-
-export function DashboardShell({ children }: { children: ReactNode }) {
+export function DashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const isProductsSection = pathname.startsWith("/dashboard/products");
-  const [user, setUser] = useState<SessionUser | null>(null);
+  const [user, setUser] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(isProductsSection);
   const [whatsAppTestStatus, setWhatsAppTestStatus] =
-    useState<WhatsAppTestStatus>("idle");
+    useState("idle");
   const [whatsAppTestMessage, setWhatsAppTestMessage] = useState("");
 
   useEffect(() => {
@@ -43,7 +34,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           return;
         }
 
-        const data = (await response.json()) as { user: SessionUser };
+        const data = await response.json();
         setUser(data.user);
       } catch (error) {
         if (error instanceof Error && error.name === "AbortError") return;
@@ -77,9 +68,7 @@ export function DashboardShell({ children }: { children: ReactNode }) {
         method: "POST",
         credentials: "include",
       });
-      const data = (await response.json().catch(() => ({}))) as {
-        message?: string;
-      };
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(data.message ?? "Não foi possível enviar a mensagem.");
