@@ -10,12 +10,11 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3333";
 export function DashboardShell({ children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const isProductsSection = pathname.startsWith("/dashboard/products");
+  const isProductsSection = pathname.startsWith("/products");
   const [user, setUser] = useState(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isProductsOpen, setIsProductsOpen] = useState(isProductsSection);
-  const [whatsAppTestStatus, setWhatsAppTestStatus] =
-    useState("idle");
+  const [whatsAppTestStatus, setWhatsAppTestStatus] = useState("idle");
   const [whatsAppTestMessage, setWhatsAppTestMessage] = useState("");
 
   useEffect(() => {
@@ -163,28 +162,22 @@ export function DashboardShell({ children }) {
               <div className={styles.submenu} id="products-menu">
                 <Link
                   className={`${styles.submenuItem} ${
-                    pathname === "/dashboard/products"
-                      ? styles.submenuItemActive
-                      : ""
+                    pathname === "/products" ? styles.submenuItemActive : ""
                   }`}
-                  href="/dashboard/products"
-                  aria-current={
-                    pathname === "/dashboard/products" ? "page" : undefined
-                  }
+                  href="/products"
+                  aria-current={pathname === "/products" ? "page" : undefined}
                 >
                   Lista
                 </Link>
                 <Link
                   className={`${styles.submenuItem} ${
-                    pathname === "/dashboard/products/measure"
+                    pathname === "/products/measure"
                       ? styles.submenuItemActive
                       : ""
                   }`}
-                  href="/dashboard/products/measure"
+                  href="/products/measure"
                   aria-current={
-                    pathname === "/dashboard/products/measure"
-                      ? "page"
-                      : undefined
+                    pathname === "/products/measure" ? "page" : undefined
                   }
                 >
                   Unidade de Medida
